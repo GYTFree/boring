@@ -2,17 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block base %}
+    <title>{% block title %}
         Base Page
     {% endblock %}
     </title>
     <link rel="stylesheet" href="/static/crawler/css/bootstrap.min.css">
+    <style>
+        body {
+            margin-top: 3%;
+        }
+    </style>
     {% block head %}
-        <style>
-            body {
-                margin-top: 3%;
-            }
-        </style>
+
     {% endblock %}
 </head>
 <body>

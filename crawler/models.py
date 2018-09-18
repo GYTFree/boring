@@ -27,7 +27,7 @@ class ProductUrl(models.Model):
     platform = models.CharField(max_length=64)
     href = models.CharField(max_length=255, unique=True)
     create_by = models.CharField(max_length=64)
-    create_time = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    create_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.href
@@ -44,12 +44,12 @@ class ProductDetail(models.Model):
     name = models.CharField(max_length=255)
     seller_name = models.CharField(max_length=64)
     category_path = models.CharField(max_length=255)
-    currency = models.CharField(max_length=16)
+    currency = models.CharField(max_length=16, null=True)
     price = models.CharField(max_length=16)
     tag_price = models.CharField(max_length=16, default=0)
     discount_rate = models.CharField(max_length=16, default=0)
     old_price = models.CharField(max_length=16, default=0)
-    old_discount_price = models.CharField(max_length=16, default=0)
+    old_tag_price = models.CharField(max_length=16, default=0)
     old_discount_rate = models.CharField(max_length=16, default=0)
     product_url = models.OneToOneField(to='ProductUrl', to_field='id', on_delete=models.CASCADE)
 

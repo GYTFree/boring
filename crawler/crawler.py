@@ -1,4 +1,5 @@
 import json
+import pymysql
 import requests
 from bs4 import BeautifulSoup
 
@@ -8,12 +9,9 @@ def get_product_info(url):
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.92 Safari/537.36',
     }
 
-    resp = requests.get(url, headers=headers)
+    resp = requests.get(url, headers=headers, timeout=30)
 
     record = {}
-    with open('resp.html', 'wb') as f:
-        for line in resp.iter_lines(chunk_size=4):
-            f.write(line)
     soup = BeautifulSoup(resp.text, 'lxml')
 
     # get category information from html
@@ -28,9 +26,12 @@ def get_product_info(url):
     record['name'] = product_name
 
     # get currency
-    currency = soup.find('meta', itemprop='priceCurrency')
-    currency = currency['content']
-    record['currency'] = currency
+    if soup.find('meta', itemprop='priceCurrency'):
+        currency = soup.find('meta', itemprop='priceCurrency')
+        currency = currency['content']
+        record['currency'] = currency
+    else:
+        record['currency'] = None
 
     # get price
     price = soup.find_all('span', itemprop='price')
@@ -45,7 +46,7 @@ def get_product_info(url):
     if tag_price:
         tag_price = tag_price[0].string.strip().split()[1]
     else:
-        discount_price = 0
+        tag_price = 0
     record['tag_price'] = tag_price
 
     # get discount_rate
@@ -82,3 +83,36 @@ def get_product_info(url):
             pass
     return record
 
+
+def get_urls():
+    with open('static/crawler/tmp/urls.txt', 'r') as f:
+        for line in f:
+            yield line.strip()
+
+
+if __name__ == '__main__':
+    db_info = {
+        'host': '127.0.0.1',
+        'port': 3306,
+        'user': 'root',
+        'password': 'wj@2018',
+    }
+
+    try:
+        conn = pymysql.connect(**db_info)
+        cursor = conn.cursor()
+    except Exception as e:
+        print(e)
+
+    sql = """insert into example.crawler_productdetail (`ean`,`sku`,`name`,`seller_name`,`category_path`,`currency`,`price`,
+    `tag_price`,`discount_rate`) values (%(ean)s,%(sku)s,%(name)s,%(seller_name)s,%(category_path)s,%(currency)s,%(price)s,%(tag_price)s,%(discount_rate)s)
+    """
+
+    with open('urls.txt', 'r') as f:
+        for line in f:
+            print(line.strip())
+            record = get_product_info(line.strip())
+            cursor.execute(sql, record)
+            conn.commit()
+    cursor.close()
+    conn.close()

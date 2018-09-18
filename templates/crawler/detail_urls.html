@@ -1,5 +1,5 @@
 {% extends 'crawler/base.html' %}
-{% block head %}
+{% block title %}
     Product Detail
 {% endblock %}
 {% block body %}
@@ -15,30 +15,55 @@
                         <th class="text-center">PROVIDER</th>
                         <th class="text-center">CURRENCY</th>
                         <th class="text-center">PRICE</th>
-                        <th class="text-center">DIACOUNT PRICE</th>
+                        <th class="text-center">DIS PRICE</th>
                         <th class="text-center">OLD PRICE</th>
-                        <th class="text-center">OLD DIACOUNT PRICE</th>
+                        <th class="text-center">OLD PRICE</th>
                     </tr>
                     </thead>
                     {% for item in details %}
                         <tr>
                             <td>{{ item.id }}</td>
                             <td>{{ item.ean }}</td>
-                            <td>{{ item.sku }}</td>
+                            <td><a href="#">{{ item.sku }}</a></td>
                             <td>{{ item.seller_name }}</td>
                             <td>{{ item.currency }}</td>
                             <td>{{ item.price }}</td>
-                            <td>{{ item.discount_price }}</td>
+                            <td>{{ item.tag_price }}</td>
                             <td>{{ item.old_price }}</td>
-                            <td>{{ item.old_discount_price }}</td>
+                            <td>{{ item.old_tag_price }}</td>
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan=8><h5 class="text-center text-danger">没有搜索到相关的SKU信息</h5></td>
+                            <td colspan=8><h5 class="text-center text-danger">没有搜索到相关的url信息</h5></td>
                         </tr>
                     {% endfor %}
                 </table>
+            <nav aria-label="Page navigation">
+                <ul class="pagination pull-right">
+                    {% if details.has_previous %}
+                        <li><a href="?page={{ details.previous_page_number }}" aria-label="Previous"><span
+                                aria-hidden="true">上一页</span></a></li>
+                    {% else %}
+                        <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">上一页</span></a>
+                        </li>
+                    {% endif %}
+                    {% for page in page_range %}
+                        {% if curr_page == page %}
+                            <li class="active"><a href="?page={{ page }}">{{ page }}</a></li>
+                        {% else %}
+                            <li><a href="?page={{ page }}">{{ page }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if details.has_next %}
+                        <li><a href="?page={{ details.next_page_number }}" aria-label="Next"><span
+                                aria-hidden="true">下一页</span></a></li>
+                    {% else %}
+                        <li class="disabled"><a href="#" aria-label="Next"><span aria-hidden="true">下一页</span></a></li>
+                    {% endif %}
+                </ul>
+            </nav>
             </div>
+
         </div>
     </div>
 {% endblock %}
