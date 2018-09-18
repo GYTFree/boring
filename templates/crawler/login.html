@@ -24,6 +24,7 @@
                     <lable for="password">密码</lable>
                     <input type="password" id="password" class="form-control">
                 </div>
+
                 <div class="form-group">
                     <label for="valid_code">验证码:</label>
                     <div class="row">
@@ -31,12 +32,19 @@
                             <input type="text" class="form-control" id="valid_code">
                         </div>
                         <div class="col-md-6">
-                            <img width="155" height="33" src="{% url 'crawler:get_img_code' %}" alt="验证码" id="valid_img">
+                            <img width="155" height="33" src="{% url 'crawler:get_img_code' %}" alt="验证码"
+                                 id="valid_img">
                         </div>
                     </div>
+                    <div><span class="error_msg text-danger pull-right"></span></div>
                 </div>
-                <div class="form-group"></div>
-                <input type="button" class="btn btn-success btn-block" id="submit" value="submit">
+                <div class="form-group">
+                    <input type="button" class="btn btn-success btn-block" id="submit" value="submit">
+                </div>
+                <div class="form-group">
+                    <a href="#" class="pull-left">忘记密码？</a>
+                    <a href="{% url 'crawler:regist' %}" class="pull-right">新用户</a>
+                </div>
             </form>
         </div>
     </div>
@@ -44,8 +52,32 @@
 <script src="/static/crawler/js/jquery-3.3.1.min.js"></script>
 <script src="/static/crawler/js/bootstrap.js"></script>
 <script>
-    $("#valid_img").click(function(){
+    $("#valid_img").click(function () {
         $("#valid_img")[0].src += '?';
+    });
+
+    $('#submit').click(function () {
+        $.ajax({
+            url: '',
+            type: 'post',
+            data: {
+                user: $('#user').val(),
+                password: $('#password').val(),
+                valid_code: $('#valid_code').val(),
+                csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
+            },
+            success: function (data) {
+                if (data.user) {
+                    location.href = '/';
+                } else {
+                    $(".error_msg").text(data.msg);
+                }
+                ;
+                setTimeout(function () {
+                    $(".error_msg").text("");
+                }, 3000)
+            }
+        })
     });
 </script>
 </body>

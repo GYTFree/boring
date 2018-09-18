@@ -3,6 +3,7 @@ from crawler import views
 
 urlpatterns = [
     path('', views.product_urls),
+    path('regist/', views.regist, name='regist'),
     path('login/', views.login, name='login'),
     path('get_img_code/', views.get_img_code, name='get_img_code'),
     path('product_urls/', views.product_urls, name='product_urls'),
