@@ -16,7 +16,7 @@
                         <div class="form-group">
                             <label for="url">item</label>
                             <input type="text" class="form-control" id="url" style="width: 350px;">
-                            <button type="button" class="btn btn-success" id="serach_url">Search</button>
+                            <button type="button" class="btn btn-success" id="add_url">Add</button>
                         </div>
                     </form>
                 </div>
@@ -24,7 +24,7 @@
         </div>
         <div class="row" style="margin-top: 10px;" id="url_info">
             <div class="col-md-10 col-md-offset-1">
-                <table class="table table-condensed table-bordered">
+                <table class="table table-condensed table-bordered table-hover">
                     <thead>
                     <tr>
                         <th class="text-center">ID</th>
@@ -49,31 +49,33 @@
                     {% endfor %}
                 </table>
                 <nav aria-label="Page navigation">
-                <ul class="pagination pull-right">
-                    {% if urls.has_previous %}
-                        <li><a href="?page={{ urls.previous_page_number }}" aria-label="Previous"><span
-                                aria-hidden="true">上一页</span></a></li>
-                    {% else %}
-                        <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">上一页</span></a>
-                        </li>
-                    {% endif %}
-                    {% for page in page_range %}
-                        {% if curr_page == page %}
-                            <li class="active"><a href="?page={{ page }}">{{ page }}</a></li>
+                    <ul class="pagination pull-right">
+                    <li><a href="?page=1" aria-label="Previous"><span aria-hidden="true">首页</span></a></li>
+                        {% if urls.has_previous %}
+                            <li><a href="?page={{ urls.previous_page_number }}" aria-label="Previous"><span
+                                    aria-hidden="true">上一页</span></a></li>
                         {% else %}
-                            <li><a href="?page={{ page }}">{{ page }}</a></li>
+                            <li class="disabled"><a href="#" aria-label="Previous"><span
+                                    aria-hidden="true">上一页</span></a>
+                            </li>
                         {% endif %}
-                    {% endfor %}
-                    {% if urls.has_next %}
-                        <li><a href="?page={{ urls.next_page_number }}" aria-label="Next"><span
-                                aria-hidden="true">下一页</span></a></li>
-                    {% else %}
-                        <li class="disabled"><a href="#" aria-label="Next"><span aria-hidden="true">下一页</span></a></li>
-                    {% endif %}
-                </ul>
-            </nav>
+                        {% for page in page_range %}
+                            {% if curr_page == page %}
+                                <li class="active"><a href="?page={{ page }}">{{ page }}</a></li>
+                            {% else %}
+                                <li><a href="?page={{ page }}">{{ page }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if urls.has_next %}
+                            <li><a href="?page={{ urls.next_page_number }}" aria-label="Next"><span
+                                    aria-hidden="true">下一页</span></a></li>
+                        {% else %}
+                            <li class="disabled"><a href="#" aria-label="Next"><span aria-hidden="true">下一页</span></a></li>
+                        {% endif %}
+                    <li><a href="?page={{ total_pages }}" aria-label="Previous"><span aria-hidden="true">尾页</span></a></li>
+                    </ul>
+                </nav>
             </div>
         </div>
-
     </div>
 {% endblock %}

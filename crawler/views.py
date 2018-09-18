@@ -52,6 +52,7 @@ def product_urls(request):
     platforms = ProductUrl.objects.values('platform').distinct()
     from django.core.paginator import Paginator, EmptyPage
     pageinator = Paginator(urls, per_page=20)
+    total_pages = pageinator.num_pages
     try:
         curr_page = int(request.GET.get('page', 1))
         results = pageinator.page(curr_page)
@@ -71,6 +72,7 @@ def product_urls(request):
         'page_range': page_range,
         'curr_page': curr_page,
         'platforms': platforms,
+        'total_pages': total_pages,
     }
 
     return render(request, 'crawler/product_urls.html', context=context)
@@ -94,6 +96,7 @@ def url_detail(request):
     details = ProductDetail.objects.all()
     from django.core.paginator import Paginator, EmptyPage
     pageinator = Paginator(details, per_page=20)
+    total_pages = pageinator.num_pages
     try:
         curr_page = int(request.GET.get('page', 1))
         results = pageinator.page(curr_page)
@@ -112,8 +115,9 @@ def url_detail(request):
         'details': results,
         'page_range': page_range,
         'curr_page': curr_page,
+        'total_pages': total_pages
     }
-    return render(request, 'crawler/detail_urls.html', context=context)
+    return render(request, 'crawler/urls_detail.html', context=context)
 
 
 def add_urls(request):
