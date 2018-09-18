@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponse
-
-
+from crawler.models import ProductUrl, ProductDetail
+from crawler.crawler import get_product_info
 # Create your views here.
 
 def login(request):
@@ -43,15 +43,46 @@ def get_img_code(request):
     width = 155
     height = 33
 
-    for i in range(5):
-        x1 = random.randint(5, width)
-        x2 = random.randint(5, width)
-        y1 = random.randint(0, height)
+    for i in range(3):
+        x1 = random.randint(5, 10)
+        x2 = random.randint(100, width)
+        y1 = random.randint(5, 30)
         y2 = random.randint(0, height)
         draw.line((x1, y1, x2, y2), fill=get_font_color())
 
-    for i in range(5):
-        pass
     img.save(f, 'png')
     data = f.getvalue()
     return HttpResponse(data)
+
+
+def product_urls(request):
+    urls = ProductUrl.objects.all()
+    platforms = ProductUrl.objects.values('platform').distinct()
+
+    context = {
+        'platforms': platforms,
+        'urls': urls
+    }
+    return render(request, 'crawler/product_urls.html', context=context)
+
+
+def crawler(request):
+    urls = ProductUrl.objects.filter(platform='eprice')
+    print(urls)
+    for url in urls:
+        result = get_product_info(url.href)
+        result['product_url'] = url
+        record = ProductDetail.objects.filter(ean=result['ean'])
+        if record:
+            pass
+        else:
+            ProductDetail.objects.create(**result)
+    return HttpResponse('OK')
+
+
+def url_detail(request):
+    details = ProductDetail.objects.all()
+    context = {
+        'details': details,
+    }
+    return render(request, 'crawler/detail_urls.html', context=context)

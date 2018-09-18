@@ -75,11 +75,11 @@ WSGI_APPLICATION = 'boring.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': '127.0.0.1',
+        'HOST': '192.168.1.120',
         'NAME': 'crawler',
         'PORT': 3306,
-        'USER': 'root',
-        'PASSWORD': '123456',
+        'USER': 'crawler',
+        'PASSWORD': 'wj@2018&CRL',
     }
 }
 

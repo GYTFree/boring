@@ -1,0 +1,44 @@
+{% extends 'crawler/base.html' %}
+{% block head %}
+    Product Detail
+{% endblock %}
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <table class="table table-condensed table-bordered">
+                    <thead>
+                    <tr>
+                        <th class="text-center">ID</th>
+                        <th class="text-center">EAN</th>
+                        <th class="text-center">SKU</th>
+                        <th class="text-center">PROVIDER</th>
+                        <th class="text-center">CURRENCY</th>
+                        <th class="text-center">PRICE</th>
+                        <th class="text-center">DIACOUNT PRICE</th>
+                        <th class="text-center">OLD PRICE</th>
+                        <th class="text-center">OLD DIACOUNT PRICE</th>
+                    </tr>
+                    </thead>
+                    {% for item in details %}
+                        <tr>
+                            <td>{{ item.id }}</td>
+                            <td>{{ item.ean }}</td>
+                            <td>{{ item.sku }}</td>
+                            <td>{{ item.seller_name }}</td>
+                            <td>{{ item.currency }}</td>
+                            <td>{{ item.price }}</td>
+                            <td>{{ item.discount_price }}</td>
+                            <td>{{ item.old_price }}</td>
+                            <td>{{ item.old_discount_price }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan=8><h5 class="text-center text-danger">没有搜索到相关的SKU信息</h5></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

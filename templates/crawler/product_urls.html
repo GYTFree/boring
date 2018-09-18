@@ -1,0 +1,55 @@
+{% extends 'crawler/base.html' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8  col-md-offset-1">
+                <div class="row">
+                    <form class="form-inline">
+                        {% csrf_token %}
+                        <label>Platform</label>
+                        <select class="form-control" id="platform">
+                            {% for platform in platforms %}
+                                <option>{{ platform.platform }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-group">
+                            <label for="url">item</label>
+                            <input type="text" class="form-control" id="url" style="width: 350px;">
+                            <button type="button" class="btn btn-success" id="serach_url">Search</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;" id="url_info">
+            <div class="col-md-10 col-md-offset-1">
+                <table class="table table-condensed table-bordered">
+                    <thead>
+                    <tr>
+                        <th class="text-center">ID</th>
+                        <th class="text-center">Platform</th>
+                        <th class="text-center">Href</th>
+                        <th class="text-center">Create By</th>
+                        <th class="text-center">Create Time</th>
+                    </tr>
+                    </thead>
+                    {% for item in urls %}
+                        <tr>
+                            <td>{{ item.id }}</td>
+                            <td>{{ item.platform }}</td>
+                            <td>{{ item.href }}</td>
+                            <td>{{ item.create_by }}</td>
+                            <td>{{ item.create_time }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan=8><h5 class="text-center text-danger">没有搜索到相关的url信息</h5></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

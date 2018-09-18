@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block base %}
+        Base Page
+    {% endblock %}
+    </title>
+    <link rel="stylesheet" href="/static/crawler/css/bootstrap.min.css">
+    {% block head %}
+        <style>
+            body {
+                margin-top: 3%;
+            }
+        </style>
+    {% endblock %}
+</head>
+<body>
+{% block body %}
+
+{% endblock %}
+
+
+<script src="/static/crawler/js/jquery-3.3.1.min.js"></script>
+<script src="/static/crawler/js/bootstrap.js"></script>
+{% block script %}
+{% endblock %}
+</body>
+</html>
