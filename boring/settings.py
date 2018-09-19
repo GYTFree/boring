@@ -105,6 +105,16 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
+# email setting
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.exmail.qq.com'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'promise@wangjigroup.com'
+EMAIL_HOST_PASSWORD = 'uQ2YHm6SEtJXCU2g'
+EMAIL_FROM = 'promise<promise@wangjigroup.com>'
+EMAIL_USE_SSL = True
+EMAIL_LIST = ["monitor@wangjigroup.com",]
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Asia/Shanghai'

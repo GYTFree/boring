@@ -1,9 +1,11 @@
 from django import forms
 from django.contrib import auth
 from django.forms import widgets
+from boring.settings import EMAIL_FROM, EMAIL_LIST
 from django.http import JsonResponse
+from django.core.mail import EmailMultiAlternatives
 from crawler.models import ProductUrl, ProductDetail
-from crawler.crawler import get_product_info, get_urls
+from crawler.utils.crawler import get_product_info
 from django.shortcuts import render, HttpResponse, redirect, reverse
 
 
@@ -149,3 +151,31 @@ def add_url(request):
                 response['msg'] = '平台和URL链接信息不能为空！'
         return JsonResponse(response)
     return redirect(reverse("product_urls"))
+
+
+def send_email(request):
+    from django.template import Context, Template
+    resp = ProductDetail.objects.exclude(seller_name__in=['JOCASE', 'ePrice']).values('seller_name', 'product_url__platform', 'product_url__href')
+    tpl = """
+        <h3>以下sku链接需要变更价格</h3>
+        <table border="1" cellspacing="0" cellpadding="3">
+          <tr>
+            <th>Platform</th>
+            <th>Provider</th>
+            <th>Url</th>
+          </tr>
+          {% for record in results %}
+          <tr><td>{{ record.product_url__platform }}</td><td>{{ record.seller_name }}</td><td>{{ record.product_url__href }}</td></tr>
+          {% endfor %}
+        </table>
+    """
+    t = Template(tpl)
+    c = Context({'results':resp})
+    content = t.render(c)
+    msg = EmailMultiAlternatives("待改价SKU链接信息", content, EMAIL_FROM, EMAIL_LIST)
+    msg.attach_alternative(content, "text/html")
+    try:
+        msg.send()
+    except Exception as e:
+        print(type(e))
+    return JsonResponse({"msg": "successful"})

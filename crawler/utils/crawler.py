@@ -84,12 +84,6 @@ def get_product_info(url):
     return record
 
 
-def get_urls():
-    with open('static/crawler/tmp/urls.txt', 'r') as f:
-        for line in f:
-            yield line.strip()
-
-
 if __name__ == '__main__':
     db_info = {
         'host': '127.0.0.1',

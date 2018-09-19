@@ -11,4 +11,5 @@ urlpatterns = [
     path('crawle_all/', views.crawle_all, name='crawle_all'),
     path('url_detail/', views.url_detail, name='url_detail'),
     path('add_url/', views.add_url, name='add_url'),
+    path('send_email/', views.send_email, ),
 ]
