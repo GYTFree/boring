@@ -70,3 +70,11 @@
         </div>
     </div>
 {% endblock %}
+
+{% block script %}
+    <script>
+    $("#nav-url").removeClass("active");
+    $("#nav-detail").attr("class", 'active');
+    </script>
+
+{% endblock %}

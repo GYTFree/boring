@@ -1,10 +1,11 @@
-from django.shortcuts import render, HttpResponse
+from django import forms
+from django.contrib import auth
+from django.forms import widgets
+from django.http import JsonResponse
 from crawler.models import ProductUrl, ProductDetail
 from crawler.crawler import get_product_info, get_urls
-from django.http import JsonResponse
-from django.contrib import auth
-from django import forms
-from django.forms import widgets
+from django.shortcuts import render, HttpResponse, redirect, reverse
+
 
 # Create your views here.
 
@@ -13,7 +14,6 @@ class UserForm(forms.Form):
     password = forms.CharField(widget=widgets.PasswordInput, min_length=8)
     re_password = forms.CharField(widget=widgets.PasswordInput, min_length=8)
     email = forms.EmailField()
-
 
 
 def get_img_code(request):
@@ -50,6 +50,11 @@ def login(request):
     return render(request, 'crawler/login.html')
 
 
+def my_logout(request):
+    auth.logout(request)
+    return redirect(reverse('login'))
+
+
 def product_urls(request):
     urls = ProductUrl.objects.all()
     platforms = ProductUrl.objects.values('platform').distinct()
@@ -76,6 +81,7 @@ def product_urls(request):
         'curr_page': curr_page,
         'platforms': platforms,
         'total_pages': total_pages,
+        'username': request.user.username,
     }
 
     return render(request, 'crawler/product_urls.html', context=context)
@@ -118,7 +124,8 @@ def url_detail(request):
         'details': results,
         'page_range': page_range,
         'curr_page': curr_page,
-        'total_pages': total_pages
+        'total_pages': total_pages,
+        'username': request.user.username,
     }
     return render(request, 'crawler/urls_detail.html', context=context)
 
