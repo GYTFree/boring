@@ -18,19 +18,21 @@
                         <th class="text-center">DIS PRICE</th>
                         <th class="text-center">OLD PRICE</th>
                         <th class="text-center">OLD PRICE</th>
+                        <th class="text-center">UPDATE TIME</th>
                     </tr>
                     </thead>
                     {% for item in details %}
                         <tr>
                             <td>{{ item.id }}</td>
                             <td>{{ item.ean }}</td>
-                            <td><a href="#">{{ item.sku }}</a></td>
+                            <td><a href="{{ item.product_url.href }}" target="_blank">{{ item.sku }}</a></td>
                             <td>{{ item.seller_name }}</td>
                             <td>{{ item.currency }}</td>
                             <td>{{ item.price }}</td>
                             <td>{{ item.tag_price }}</td>
                             <td>{{ item.old_price }}</td>
                             <td>{{ item.old_tag_price }}</td>
+                            <td>{{ item.update_time }}</td>
                         </tr>
                     {% empty %}
                         <tr>

@@ -52,6 +52,7 @@ class ProductDetail(models.Model):
     old_tag_price = models.CharField(max_length=16, default=0)
     old_discount_rate = models.CharField(max_length=16, default=0)
     product_url = models.OneToOneField(to='ProductUrl', to_field='id', on_delete=models.CASCADE)
+    update_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return (self.ean, self.name)

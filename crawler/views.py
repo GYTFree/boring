@@ -92,13 +92,13 @@ def crawle_all(request):
     for url in urls:
         print(url.href)
         result = get_product_info(url.href)
-        result['product_url'] = url
         record = ProductDetail.objects.filter(ean=result['ean'])
         if record:
-            pass
+            record.update(**result)
         else:
+            result['product_url'] = url
             ProductDetail.objects.create(**result)
-    return HttpResponse('OK')
+    return redirect(reverse("url_detail"))
 
 
 def url_detail(request):
@@ -130,17 +130,22 @@ def url_detail(request):
     return render(request, 'crawler/urls_detail.html', context=context)
 
 
-def add_urls(request):
-    urls = []
-    for url in get_urls():
-        pro_url = {}
-        pro_url['href'] = url
-        pro_url['platform'] = 'eprice'
-        pro_url['create_by'] = 'promise'
-        obj_url = ProductUrl(**pro_url)
-        urls.append(obj_url)
-    try:
-        ProductUrl.objects.bulk_create(urls)
-    except Exception as e:
-        print(e)
-    return HttpResponse('OK')
+def add_url(request):
+    if request.method == "POST":
+        # print(request.POST)
+        response = {}
+        platform = request.POST.get('platform')
+        href = request.POST.get('item').strip()
+        create_by = request.POST.get('user')
+        try:
+            record = ProductUrl.objects.get(href=href)
+            response['msg'] = '该URL已存在！'
+            return JsonResponse(response)
+        except:
+            if all([platform, href, create_by]):
+                ProductUrl.objects.create(platform=platform, href=href, create_by=create_by)
+                response['msg'] = '添加URL成功！'
+            else:
+                response['msg'] = '平台和URL链接信息不能为空！'
+        return JsonResponse(response)
+    return redirect(reverse("product_urls"))

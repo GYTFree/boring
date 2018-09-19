@@ -14,9 +14,10 @@
                             {% endfor %}
                         </select>
                         <div class="form-group">
-                            <label for="url">item</label>
-                            <input type="text" class="form-control" id="url" style="width: 350px;">
+                            <label for="item">item</label>
+                            <input type="text" class="form-control" id="item" style="width: 350px;">
                             <button type="button" class="btn btn-success" id="add_url">Add</button>
+                            <span class="text-danger" id="msg"></span>
                         </div>
                     </form>
                 </div>
@@ -50,7 +51,7 @@
                 </table>
                 <nav aria-label="Page navigation">
                     <ul class="pagination pull-right">
-                    <li><a href="?page=1" aria-label="Previous"><span aria-hidden="true">首页</span></a></li>
+                        <li><a href="?page=1" aria-label="Previous"><span aria-hidden="true">首页</span></a></li>
                         {% if urls.has_previous %}
                             <li><a href="?page={{ urls.previous_page_number }}" aria-label="Previous"><span
                                     aria-hidden="true">上一页</span></a></li>
@@ -70,12 +71,36 @@
                             <li><a href="?page={{ urls.next_page_number }}" aria-label="Next"><span
                                     aria-hidden="true">下一页</span></a></li>
                         {% else %}
-                            <li class="disabled"><a href="#" aria-label="Next"><span aria-hidden="true">下一页</span></a></li>
+                            <li class="disabled"><a href="#" aria-label="Next"><span aria-hidden="true">下一页</span></a>
+                            </li>
                         {% endif %}
-                    <li><a href="?page={{ total_pages }}" aria-label="Previous"><span aria-hidden="true">尾页</span></a></li>
+                        <li><a href="?page={{ total_pages }}" aria-label="Previous"><span
+                                aria-hidden="true">尾页</span></a></li>
                     </ul>
                 </nav>
             </div>
         </div>
     </div>
+{% endblock %}
+{% block script %}
+    <script>
+        $("#add_url").click(function () {
+            $.ajax({
+                url: "{% url 'crawler:add_url' %}",
+                type: "post",
+                data: {
+                    platform: $("#platform").val(),
+                    item: $("#item").val(),
+                    user: $("#username").text(),
+                    csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
+                },
+                success: function (data) {
+                    $("#msg").text(data.msg);
+                    setTimeout(function () {
+                        $("#msg").text("");
+                    }, 2000);
+                },
+            })
+        })
+    </script>
 {% endblock %}

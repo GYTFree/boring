@@ -10,5 +10,5 @@ urlpatterns = [
     path('product_urls/', views.product_urls, name='product_urls'),
     path('crawle_all/', views.crawle_all, name='crawle_all'),
     path('url_detail/', views.url_detail, name='url_detail'),
-    path('add_urls/', views.add_urls, name='add_urls'),
+    path('add_url/', views.add_url, name='add_url'),
 ]
