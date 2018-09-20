@@ -1,6 +1,8 @@
 from django import forms
+from django.utils import timezone
 from django.contrib import auth
 from django.forms import widgets
+from django.contrib.auth.decorators import login_required
 from boring.settings import EMAIL_FROM, EMAIL_LIST
 from django.http import JsonResponse
 from django.core.mail import EmailMultiAlternatives
@@ -56,9 +58,9 @@ def my_logout(request):
     auth.logout(request)
     return redirect(reverse('login'))
 
-
+@login_required
 def product_urls(request):
-    urls = ProductUrl.objects.all()
+    urls = ProductUrl.objects.all().order_by('id')
     platforms = ProductUrl.objects.values('platform').distinct()
     from django.core.paginator import Paginator, EmptyPage
     pageinator = Paginator(urls, per_page=20)
@@ -96,15 +98,17 @@ def crawle_all(request):
         result = get_product_info(url.href)
         record = ProductDetail.objects.filter(ean=result['ean'])
         if record:
+            update_time = timezone.now()
+            result['update_time'] = update_time
             record.update(**result)
         else:
             result['product_url'] = url
             ProductDetail.objects.create(**result)
     return redirect(reverse("url_detail"))
 
-
+@login_required
 def url_detail(request):
-    details = ProductDetail.objects.all()
+    details = ProductDetail.objects.all().order_by('id')
     from django.core.paginator import Paginator, EmptyPage
     pageinator = Paginator(details, per_page=20)
     total_pages = pageinator.num_pages
@@ -131,7 +135,7 @@ def url_detail(request):
     }
     return render(request, 'crawler/urls_detail.html', context=context)
 
-
+@login_required
 def add_url(request):
     if request.method == "POST":
         # print(request.POST)
@@ -140,7 +144,7 @@ def add_url(request):
         href = request.POST.get('item').strip()
         create_by = request.POST.get('user')
         try:
-            record = ProductUrl.objects.get(href=href)
+            ProductUrl.objects.get(href=href)
             response['msg'] = '该URL已存在！'
             return JsonResponse(response)
         except:
@@ -155,7 +159,9 @@ def add_url(request):
 
 def send_email(request):
     from django.template import Context, Template
-    resp = ProductDetail.objects.exclude(seller_name__in=['JOCASE', 'ePrice']).values('seller_name', 'product_url__platform', 'product_url__href')
+    resp = ProductDetail.objects.exclude(seller_name__in=['JOCASE', 'ePrice']).values('seller_name',
+                                                                                      'product_url__platform',
+                                                                                      'product_url__href')
     tpl = """
         <h3>以下sku链接需要变更价格</h3>
         <table border="1" cellspacing="0" cellpadding="3">
@@ -170,7 +176,7 @@ def send_email(request):
         </table>
     """
     t = Template(tpl)
-    c = Context({'results':resp})
+    c = Context({'results': resp})
     content = t.render(c)
     msg = EmailMultiAlternatives("待改价SKU链接信息", content, EMAIL_FROM, EMAIL_LIST)
     msg.attach_alternative(content, "text/html")
