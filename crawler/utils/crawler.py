@@ -100,6 +100,7 @@ def crawle_job(urls):
         else:
             result['product_url'] = url
             ProductDetail.objects.create(**result)
+    return None
 
 
 if __name__ == '__main__':

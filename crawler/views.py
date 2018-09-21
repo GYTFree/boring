@@ -94,18 +94,17 @@ def product_urls(request):
 
 def crawle_all(request):
     urls = ProductUrl.objects.filter(platform='eprice')
-    print(urls)
-    # crawle_job(urls)
-    for url in urls:
-        result = get_product_info(url.href)
-        record = ProductDetail.objects.filter(ean=result['ean'])
-        if record:
-            update_time = timezone.now()
-            result['update_time'] = update_time
-            record.update(**result)
-        else:
-            result['product_url'] = url
-            ProductDetail.objects.create(**result)
+    crawle_job(urls)
+    # for url in urls:
+    #     result = get_product_info(url.href)
+    #     record = ProductDetail.objects.filter(ean=result['ean'])
+    #     if record:
+    #         update_time = timezone.now()
+    #         result['update_time'] = update_time
+    #         record.update(**result)
+    #     else:
+    #         result['product_url'] = url
+    #         ProductDetail.objects.create(**result)
     return redirect(reverse("crawler:url_detail"))
 
 
