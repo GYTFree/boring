@@ -24,7 +24,6 @@ def get_product_info(url):
 
     # get product name
     product_name = soup.find('h1', class_='seoDescription')
-    print(product_name)
     product_name = product_name.text
     product_name = ' '.join(product_name.split())
     record['name'] = product_name
