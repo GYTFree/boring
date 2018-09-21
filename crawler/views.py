@@ -1,5 +1,4 @@
 from django import forms
-from django.utils import timezone
 from django.contrib import auth
 from django.forms import widgets
 from django.contrib.auth.decorators import login_required
@@ -7,7 +6,7 @@ from boring.settings import EMAIL_FROM, EMAIL_LIST
 from django.http import JsonResponse
 from django.core.mail import EmailMultiAlternatives
 from crawler.models import ProductUrl, ProductDetail
-from crawler.utils.crawler import get_product_info
+from crawler.utils.crawler import crawle_job
 from django.shortcuts import render, HttpResponse, redirect, reverse
 
 
@@ -58,6 +57,7 @@ def my_logout(request):
     auth.logout(request)
     return redirect(reverse('login'))
 
+
 @login_required
 def product_urls(request):
     urls = ProductUrl.objects.all().order_by('id')
@@ -93,18 +93,21 @@ def product_urls(request):
 
 def crawle_all(request):
     urls = ProductUrl.objects.filter(platform='eprice')
-    for url in urls:
-        print(url.href)
-        result = get_product_info(url.href)
-        record = ProductDetail.objects.filter(ean=result['ean'])
-        if record:
-            update_time = timezone.now()
-            result['update_time'] = update_time
-            record.update(**result)
-        else:
-            result['product_url'] = url
-            ProductDetail.objects.create(**result)
+    print(urls)
+    crawle_job(urls)
+    # for url in urls:
+    #     url_list.append(url)
+    #     result = get_product_info(url.href)
+    #     record = ProductDetail.objects.filter(ean=result['ean'])
+    #     if record:
+    #         update_time = timezone.now()
+    #         result['update_time'] = update_time
+    #         record.update(**result)
+    #     else:
+    #         result['product_url'] = url
+    #         ProductDetail.objects.create(**result)
     return redirect(reverse("url_detail"))
+
 
 @login_required
 def url_detail(request):
@@ -134,6 +137,7 @@ def url_detail(request):
         'username': request.user.username,
     }
     return render(request, 'crawler/urls_detail.html', context=context)
+
 
 @login_required
 def add_url(request):

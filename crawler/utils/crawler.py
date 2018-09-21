@@ -1,7 +1,10 @@
 import json
+import time
 import pymysql
 import requests
 from bs4 import BeautifulSoup
+from django.utils import timezone
+from crawler.models import ProductDetail
 
 
 def get_product_info(url):
@@ -21,6 +24,7 @@ def get_product_info(url):
 
     # get product name
     product_name = soup.find('h1', class_='seoDescription')
+    print(product_name)
     product_name = product_name.text
     product_name = ' '.join(product_name.split())
     record['name'] = product_name
@@ -82,6 +86,20 @@ def get_product_info(url):
         else:
             pass
     return record
+
+
+def crawle_job(urls):
+    for url in urls:
+        print(url.href)
+        result = get_product_info(url.href)
+        record = ProductDetail.objects.filter(ean=result['ean'])
+        if record:
+            update_time = timezone.now()
+            result['update_time'] = update_time
+            record.update(**result)
+        else:
+            result['product_url'] = url
+            ProductDetail.objects.create(**result)
 
 
 if __name__ == '__main__':
