@@ -55,7 +55,7 @@ def login(request):
 
 def my_logout(request):
     auth.logout(request)
-    return redirect(reverse('login'))
+    return redirect(reverse('crawler:login'))
 
 
 @login_required
@@ -106,7 +106,7 @@ def crawle_all(request):
     #     else:
     #         result['product_url'] = url
     #         ProductDetail.objects.create(**result)
-    return redirect(reverse("url_detail"))
+    return redirect(reverse("crawler:url_detail"))
 
 
 @login_required

@@ -69,7 +69,7 @@
             },
             success: function (data) {
                 if (data.user) {
-                    location.href = "{% url 'product_urls' %}";
+                    location.href = "{% url 'crawler:product_urls' %}";
                 } else {
                     $(".error_msg").text(data.msg);
                 }
