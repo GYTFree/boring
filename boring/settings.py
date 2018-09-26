@@ -133,4 +133,4 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-# STATIC_ROOT = '/data/apps/webapps/boring/static'
+STATIC_ROOT = '/data/apps/webapps/boring/static'
